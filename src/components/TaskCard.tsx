@@ -1,6 +1,7 @@
-import { Task } from "@/lib/kanban-data";
+import { Task, TaskStatus } from "@/lib/kanban-data";
 import { GripVertical, MoreHorizontal, Pencil, Trash2 } from "lucide-react";
 import { Progress } from "@/components/ui/progress";
+import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
 import {
   DropdownMenu,
@@ -20,11 +21,26 @@ interface TaskCardProps {
 export function TaskCard({ task, onDelete, onEdit, onDragStart }: TaskCardProps) {
   const timeAgo = formatDistanceToNow(task.createdAt, { addSuffix: true });
 
+  const cardAccent: Record<TaskStatus, string> = {
+    planned: "border-l-kanban-planned",
+    "in-progress": "border-l-kanban-progress",
+    completed: "border-l-kanban-completed bg-success/5",
+  };
+
+  const progressColor: Record<TaskStatus, string> = {
+    planned: "[&>div]:bg-kanban-planned",
+    "in-progress": "[&>div]:bg-kanban-progress",
+    completed: "[&>div]:bg-kanban-completed",
+  };
+
   return (
     <div
       draggable
       onDragStart={(e) => onDragStart(e, task.id)}
-      className="group cursor-grab active:cursor-grabbing rounded-xl bg-card border border-border p-4 shadow-sm hover:shadow-md transition-all duration-200 hover:-translate-y-0.5"
+      className={cn(
+        "group cursor-grab active:cursor-grabbing rounded-xl bg-card border border-border border-l-[3px] p-4 shadow-sm hover:shadow-md transition-all duration-200 hover:-translate-y-0.5",
+        cardAccent[task.status]
+      )}
     >
       <div className="flex items-start justify-between mb-2">
         <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
@@ -67,7 +83,7 @@ export function TaskCard({ task, onDelete, onEdit, onDragStart }: TaskCardProps)
           </span>
           <span className="text-xs font-medium text-muted-foreground">{task.progress}%</span>
         </div>
-        <Progress value={task.progress} className="h-1.5" />
+        <Progress value={task.progress} className={cn("h-1.5", progressColor[task.status])} />
       </div>
 
       <div className="flex flex-wrap gap-1.5">

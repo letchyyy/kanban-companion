@@ -12,10 +12,16 @@ interface KanbanColumnProps {
   onDragStart: (e: React.DragEvent, taskId: string) => void;
 }
 
-const columnColors: Record<TaskStatus, string> = {
+const dotColors: Record<TaskStatus, string> = {
   planned: "bg-kanban-planned",
   "in-progress": "bg-kanban-progress",
   completed: "bg-kanban-completed",
+};
+
+const headerBg: Record<TaskStatus, string> = {
+  planned: "bg-primary/5",
+  "in-progress": "bg-warning/5",
+  completed: "bg-success/5",
 };
 
 export function KanbanColumn({
@@ -45,10 +51,10 @@ export function KanbanColumn({
 
   return (
     <div className="flex-1 min-w-[300px]">
-      <div className="flex items-center gap-2.5 mb-4 px-1">
-        <div className={cn("h-2.5 w-2.5 rounded-full", columnColors[status])} />
+      <div className={cn("flex items-center gap-2.5 mb-4 px-3 py-2.5 rounded-xl", headerBg[status])}>
+        <div className={cn("h-2.5 w-2.5 rounded-full", dotColors[status])} />
         <h2 className="font-semibold text-sm text-foreground">{column.label}</h2>
-        <span className="ml-auto text-xs font-medium text-muted-foreground bg-muted px-2 py-0.5 rounded-full">
+        <span className="ml-auto text-xs font-medium text-muted-foreground bg-card px-2 py-0.5 rounded-full">
           {tasks.length}
         </span>
       </div>
